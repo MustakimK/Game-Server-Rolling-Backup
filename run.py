@@ -3,8 +3,8 @@ from datetime import datetime
 import shutil
 
 while(True):
-    backup_frequency = 2 #os.environ['BACKUP_FREQUENCY', 60]
-    backup_age = 1 #os.environ['BACKUP_AGE',1]
+    backup_frequency = os.environ['BACKUP_FREQUENCY', 60]
+    backup_age = os.environ['BACKUP_AGE',1]
     source = "/home/kaz/DockerFiles/saves"
     destination= "/home/kaz/DockerFiles/backups"
     fileName = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%p")
