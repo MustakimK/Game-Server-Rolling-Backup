@@ -15,10 +15,10 @@ services:
   backups:
     image: backup:test
     environment:
-      BACKUP_FREQUENCY: 5 #Enter an integer value representing minutes for how often you want backups
+      BACKUP_FREQUENCY: 1 #Enter an integer value representing minutes for how often you want backups
       BACKUP_AGE: 1 #Enter an integer to represent the number of days you want to keep backups for
     volumes:
-      - ./saves:/saves:ro # mount the same volume used by server, but read-only
+      - ./saves:/saves # mount the same volume used by server, but read-only
       - ./backups:/backups # Backupfile location
 #       - type: volume
 #         source: NFS_Storage
