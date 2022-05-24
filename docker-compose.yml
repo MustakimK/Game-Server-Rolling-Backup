@@ -1,16 +1,16 @@
 version: "2.1"
 services: 
-  vrising:
-    container_name: vrising-server
-    image: vrising:latest
-    volumes: 
-      - /home/googlrr/VRisingServer:/root/.wine/drive_c/users/root/AppData/LocalLow/Stunlock Studios/VRisingServer/Saves
-      - /home/googlrr/VRisingSettings:/root/.wine/drive_c/users/root/AppData/LocalLow/Stunlock Studios/VRisingServer/Settings/
-    ports: 
-      - "27015:27015/udp"
-      - "27016:27016/udp"
-    restart: unless-stopped
-    tty: true
+  # vrising:
+  #   container_name: vrising-server
+  #   image: vrising:latest
+  #   volumes: 
+  #     - /home/googlrr/VRisingServer:/root/.wine/drive_c/users/root/AppData/LocalLow/Stunlock Studios/VRisingServer/Saves
+  #     - /home/googlrr/VRisingSettings:/root/.wine/drive_c/users/root/AppData/LocalLow/Stunlock Studios/VRisingServer/Settings/
+  #   ports: 
+  #     - "27015:27015/udp"
+  #     - "27016:27016/udp"
+  #   restart: unless-stopped
+  #   tty: true
 
   backups:
     image: backup:test
@@ -18,7 +18,7 @@ services:
       BACKUP_FREQUENCY: 1 #Enter an integer value representing minutes for how often you want backups
       BACKUP_AGE: 1 #Enter an integer to represent the number of days you want to keep backups for
     volumes:
-      - ./saves:/saves # mount the same volume used by server, but read-only
+      - ./saves:/saves:ro # mount the same volume used by server, but read-only
       - ./backups:/backups # Backupfile location
 #       - type: volume
 #         source: NFS_Storage
