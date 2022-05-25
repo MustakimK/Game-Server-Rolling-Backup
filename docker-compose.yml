@@ -15,6 +15,8 @@ services:
   backups:
     image: backup:test
     environment:
+      VOL_SRC: /saves
+      VOL_DST: /backups
       BACKUP_FREQUENCY: 1 #Enter an integer value representing minutes for how often you want backups
       BACKUP_AGE: 1 #Enter an integer to represent the number of days you want to keep backups for
     volumes:
