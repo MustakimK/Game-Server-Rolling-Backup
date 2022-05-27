@@ -17,8 +17,8 @@ services:
     environment:
       SAVE_DIR: /saves
       BACKUP_DIR: /backups
-      BACKUP_FREQUENCY: 1 #Enter an integer value representing minutes for how often you want backups
-      OLDEST_BACKUP_AGE: 1 #Enter an integer to represent the number of days you want to keep backups for
+      BACKUP_FREQUENCY: 1h #Enter an integer value representing minutes for how often you want backups
+      OLDEST_BACKUP_AGE: 1w #Enter an integer to represent the number of days you want to keep backups for
     volumes:
       - ./saves:/saves:ro # mount the same volume used by server, but read-only
       - ./backups:/backups # Backupfile location
