@@ -14,10 +14,15 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 # Install Poetry
 RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 
+# Install dependencies
 WORKDIR /code
 COPY poetry.lock pyproject.toml /code/
 RUN poetry install
 
+# Install module
 COPY . /code
-CMD ["poetry", "run" , "main"]
+RUN poetry install
 
+# Run tests and define entrypoint
+RUN ["poetry", "run" , "pytest"]
+CMD ["poetry", "run" , "main"]
