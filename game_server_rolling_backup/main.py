@@ -26,11 +26,11 @@ def main():
         f'Starting backups from {save_dir} to {backup_dir} with interval {backup_frequency} and max age {max_age}')
 
     backup_frequency = convert_to_seconds(backup_frequency)
-    max_age = convert_to_seconds(max_age)
+    max_age_seconds = convert_to_seconds(max_age)
 
     while(True):
         backup_data(save_dir, backup_dir)
-        delete_old_files(backup_dir, max_age)
+        delete_old_files(backup_dir, max_age_seconds)
         time.sleep(backup_frequency)
 
 
@@ -45,16 +45,17 @@ def backup_data(source_dir, destination_dir):
         root_dir=source_dir)
 
 
-def delete_old_files(backup_dir, max_age):
+def delete_old_files(backup_dir, max_age_seconds):
     list_of_files = os.listdir(backup_dir)
     current_time = time.time()
 
     for filename in list_of_files:
         path = os.path.join(backup_dir, filename)
-        created_time = os.path.getctime(path)
+        file_mtime = os.path.getmtime(path)
 
-        if (current_time - created_time) > max_age:
-            log.info(f'Removing old backup: {filename}')
+        if (current_time - file_mtime) > max_age_seconds:
+            log.info(
+                f'Removing old backup: {filename} modified at {file_mtime}')
             os.remove(path)
 
 
