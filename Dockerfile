@@ -1,12 +1,23 @@
 FROM python:3.10
 
-ADD run.py /
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    POETRY_VERSION=1.1.13 \
+    POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_NO_INTERACTION=1 \
+    PYSETUP_PATH="/opt/pysetup" \
+    VENV_PATH="/opt/pysetup/.venv"
 
-# RUN pip install os
-# RUN pip install 
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
-CMD ["python3", "-u" , "./run.py"]
+# Install Poetry
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 
-# Take folder X, zip it up, put it in backups folder with timestamp every 5 minutes, Delete any backups older than a day, Backup that folder to NFS
-# Need crontab too
-# NFS part - -https://itenterpriser.com/how-to/how-to-setup-truenas-core-and-connect-to-it-from-ubuntu/
+WORKDIR /code
+COPY poetry.lock pyproject.toml /code/
+RUN poetry install
+
+COPY . /code
+CMD ["poetry", "run" , "main"]
+

@@ -1,0 +1,1 @@
+from game_server_rolling_backup.main import main
