@@ -3,54 +3,75 @@ import time
 from datetime import datetime
 import shutil
 
+import logging
+logging.basicConfig()
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
+
+DEFAULT_BACKUP_FREQUENCY = '20m'
+DEFAULT_OLDEST_BACKUP_AGE = '1w'
+DEFAULT_SAVE_DIR = '/saves'
+DEFAULT_BACKUP_DIR = '/backups'
+
+UNITS_IN_SECONDS = {'w': 604800, 'd': 86400, 'h': 3600, 'm': 60, 's': 1}
+
 
 def main():
-    BACKUP_FREQUENCY_CONSTANT = '60'
-    BACKUP_AGE_CONSTANT = '1'
-    SOURCE_DIR_CONSTANT = '/saves'
-    DESTINATION_DIR_CONSTANT = '/backups'
+    backup_frequency = os.getenv('BACKUP_FREQUENCY', DEFAULT_BACKUP_FREQUENCY)
+    max_age = os.getenv('OLDEST_BACKUP_AGE', DEFAULT_OLDEST_BACKUP_AGE)
+    save_dir = os.getenv('SAVE_DIR', DEFAULT_SAVE_DIR)
+    backup_dir = os.getenv('BACKUP_DIR', DEFAULT_BACKUP_DIR)
 
-    backup_frequency = os.getenv('BACKUP_FREQUENCY', BACKUP_FREQUENCY_CONSTANT)
-    backup_age = os.getenv('OLDEST_BACKUP_AGE', BACKUP_AGE_CONSTANT)
-    source_dir = os.getenv('SAVE_DIR', SOURCE_DIR_CONSTANT)
-    destination_dir = os.getenv('BACKUP_DIR', DESTINATION_DIR_CONSTANT)
+    log.info(
+        f'Starting backups from {save_dir} to {backup_dir} with interval {backup_frequency} and max age {max_age}')
 
     backup_frequency = convert_to_seconds(backup_frequency)
-    backup_age = convert_to_seconds(backup_age)
-
-    print(backup_age, backup_frequency)
+    max_age = convert_to_seconds(max_age)
 
     while(True):
-
-        fileName = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%p")
-
-        backup_data(destination_dir, fileName, source_dir)
-        delete_old_files(backup_age, destination_dir)
+        backup_data(save_dir, backup_dir)
+        delete_old_files(backup_dir, max_age)
         time.sleep(backup_frequency)
 
 
-def backup_data(destination_dir, fileName, source_dir):
-    shutil.make_archive(base_name=(os.path.join(
-        destination_dir, fileName)), format="zip", root_dir=source_dir)
+def backup_data(source_dir, destination_dir):
+    filename = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%p")
+    format = 'zip'
+
+    log.info(f'Creating backup: {filename}.{format}')
+    shutil.make_archive(
+        base_name=os.path.join(destination_dir, filename),
+        format=format,
+        root_dir=source_dir)
 
 
-def delete_old_files(backup_age, destination_dir):
-
-    list_of_files = os.listdir(destination_dir)
+def delete_old_files(backup_dir, max_age):
+    list_of_files = os.listdir(backup_dir)
+    current_time = time.time()
 
     for filename in list_of_files:
+        path = os.path.join(backup_dir, filename)
+        created_time = os.path.getctime(path)
 
-        path = os.path.join(destination_dir, filename)
-        modified_time = os.path.getmtime(path)
-
-        if time.time()-modified_time > (backup_age):  # * 86400): #time in seconds
+        if (current_time - created_time) > max_age:
+            log.info(f'Removing old backup: {filename}')
             os.remove(path)
 
 
 def convert_to_seconds(time_string):
-    units_in_seconds = {'w': 604800, 'd': 86400, 'h': 3600, 'm': 60, 's': 1}
+    units = time_string[-1]
+    if units not in UNITS_IN_SECONDS:
+        error_msg = f'Invalid units in time string: {time_string}'
+        log.error(error_msg)
+        raise Exception(error_msg)
 
-    return (int(time_string[:-1]) * (units_in_seconds[time_string[-1].lower()]))
+    try:
+        time_int = int(time_string[:-1])
+        return time_int * UNITS_IN_SECONDS[units.lower()]
+    except Exception:
+        error_msg = f'Failed to parse time string: {time_string}'
+        log.error(error_msg)
+        raise Exception(error_msg)
 
 
 if __name__ == "__main__":
