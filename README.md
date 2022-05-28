@@ -11,10 +11,10 @@ Creates backups at fixed intervals.
 `docker build . -t mustakim/game-backup:latest`
 
 ## Environment Variables
-`SAVE_DIR` Directory saves are read from 
-`BACKUP_DIR` Directory where backups go 
-`BACKUP_FREQUENCY` How often backups are made. Example: `1h` 
-`OLDEST_BACKUP_AGE` How often backups are kept. Example: `1w` 
+`SAVE_DIR` Directory saves are read from  
+`BACKUP_DIR` Directory where backups go  
+`BACKUP_FREQUENCY` How often backups are made. Example: `1h`  
+`OLDEST_BACKUP_AGE` How often backups are kept. Example: `1w`  
 
 ## Example docker-compose
 ```yaml
