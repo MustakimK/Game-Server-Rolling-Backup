@@ -8,7 +8,7 @@ Creates backups at fixed intervals.
 2. `poetry run pytest`
 
 ## Building Docker
-`docker build . -t mustakim/game-backup:latest`
+`docker build . -t mustakimk/game-server-backup:latest`
 
 ## Environment Variables
 `SAVE_DIR` Directory saves are read from  
@@ -21,7 +21,7 @@ Creates backups at fixed intervals.
 version: "2.1"
 services: 
   backups:
-    image: backup:latest
+    image: mustakimk/game-server-backup:latest
     environment:
       SAVE_DIR: /saves
       BACKUP_DIR: /backups
