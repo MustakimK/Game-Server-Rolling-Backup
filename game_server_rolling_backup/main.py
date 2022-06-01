@@ -29,7 +29,7 @@ def main():
     max_age_seconds = convert_to_seconds(max_age)
 
     if (backup_frequency > max_age_seconds):
-        error_msg = 'BACKUP_FREQUENCY must be greater than OLDEST_BACKUP_AGE'
+        error_msg = 'OLDEST_BACKUP_AGE must be greater than BACKUP_FREQUENCY'
         log.error(error_msg)
         raise Exception(error_msg)
 
