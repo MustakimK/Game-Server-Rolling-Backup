@@ -28,6 +28,11 @@ def main():
     backup_frequency = convert_to_seconds(backup_frequency)
     max_age_seconds = convert_to_seconds(max_age)
 
+    if (backup_frequency > max_age_seconds):
+        error_msg = 'BACKUP_FREQUENCY must be greater than OLDEST_BACKUP_AGE'
+        log.error(error_msg)
+        raise Exception(error_msg)
+
     while(True):
         backup_data(save_dir, backup_dir)
         delete_old_files(backup_dir, max_age_seconds)

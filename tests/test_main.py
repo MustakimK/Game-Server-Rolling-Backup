@@ -2,6 +2,7 @@ import pytest
 import time
 import os
 
+from game_server_rolling_backup.main import main
 from game_server_rolling_backup.main import convert_to_seconds
 from game_server_rolling_backup.main import backup_data
 from game_server_rolling_backup.main import delete_old_files
@@ -18,6 +19,16 @@ def test_convert_to_seconds_pass():
 @pytest.mark.xfail
 def test_convert_to_seconds_fail():
     convert_to_seconds('1')
+
+
+@pytest.mark.xfail
+def test_main_invalid_params(fs):
+    fs.create_dir('/saves')
+    fs.create_dir('/backups')
+
+    os.environ['BACKUP_FREQUENCY'] = '1h'
+    os.environ['OLDEST_BACKUP_AGE'] = '1m'
+    main()
 
 
 def test_backup_data_pass(fs):
