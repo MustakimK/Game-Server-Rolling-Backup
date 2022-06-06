@@ -40,7 +40,7 @@ def main():
 
 
 def backup_data(source_dir, destination_dir):
-    filename = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%p")
+    filename = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
     format = 'zip'
 
     log.info(f'Creating backup: {filename}.{format}')
